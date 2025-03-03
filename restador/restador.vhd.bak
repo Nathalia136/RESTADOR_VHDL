@@ -1,0 +1,31 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity restador is
+    Generic ( n : integer := 4 );  -- n bits para x e y
+    Port (
+        x, y : in  STD_LOGIC_VECTOR(n-1 downto 0);
+        D    : out STD_LOGIC_VECTOR(n downto 0)  -- Salida: signo + magnitud
+    );
+end restador;
+
+architecture arch_restador of restador is
+    signal x_minus_y, y_minus_x : STD_LOGIC_VECTOR(n-1 downto 0);
+    signal sign : STD_LOGIC;
+    signal magnitude : STD_LOGIC_VECTOR(n-1 downto 0);
+begin
+    -- Cálculo de x - y y y - x
+    x_minus_y <= x - y;
+    y_minus_x <= y - x;
+
+    -- Determinar el signo de D
+    sign <= '1' when x < y else '0';
+
+    -- Seleccionar la magnitud de D
+    magnitude <= y_minus_x when sign = '1' else x_minus_y;
+
+    -- Formar la salida en formato de signo y magnitud
+    D <= sign & magnitude;
+end arch_restador;
